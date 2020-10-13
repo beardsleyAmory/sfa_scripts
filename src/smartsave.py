@@ -45,10 +45,15 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.setLayout(self.main_lay)
 
     def create_connections(self):
-        """Connect Signals and Slots"""
+        """Connect signals and slots"""
         self.folder_browse_btn.clicked.connect(self._browse_folder)
+        self.ext_cmb.currentIndexChanged.connect(self._update_ext_lbl)
         self.save_btn.clicked.connect(self._save)
         self.save_increment_btn.clicked.connect(self._save_increment)
+
+    @QtCore.Slot()
+    def _update_ext_lbl(self):
+        self.ext_lbl.setText(self.ext_cmb.currentText())
 
     @QtCore.Slot()
     def _save_increment(self):
@@ -98,12 +103,17 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.ver_sbx.setFixedWidth(50)
         self.ver_sbx.setValue(self.scenefile.ver)
         self.ext_lbl = QtWidgets.QLabel(".ma")
+        self.ext_cmb = QtWidgets.QComboBox()
+        self.ext_cmb.setFixedWidth(50)
+        self.ext_cmb.addItem(".ma")
+        self.ext_cmb.addItems(['.fbx', '.obj'])
         layout.addWidget(self.descriptor_le, 1, 0)
         layout.addWidget(QtWidgets.QLabel("_"), 1, 1)
         layout.addWidget(self.task_le, 1, 2)
         layout.addWidget(QtWidgets.QLabel("_v"), 1, 3)
         layout.addWidget(self.ver_sbx, 1, 4)
-        layout.addWidget(self.ext_lbl, 1, 5)
+        # layout.addWidget(self.ext_lbl, 1, 5)
+        layout.addWidget(self.ext_cmb, 1, 7)
         return layout
 
     def _create_filename_headers(self):

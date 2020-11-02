@@ -23,31 +23,43 @@ class ScatterUI(QtWidgets.QDialog):
         self.title_lbl.setStyleSheet("font: bold 20px")
         self.scale_lay = self._create_random_scale_ui()
         self.rotation_lay = self._create_random_rotation_ui()
+        self.button_lay = self._create_button_ui()
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
         self.main_lay.addLayout(self.scale_lay)
         self.main_lay.addLayout(self.rotation_lay)
         self.main_lay.addStretch()
+        self.main_lay.addLayout(self.button_lay)
         self.setLayout(self.main_lay)
+        self._create_connections()
 
     def _create_random_scale_ui(self):
         layout = QtWidgets.QGridLayout()
         self.scale_check_btn = QtWidgets.QCheckBox()
         self.scale_lbl = QtWidgets.QLabel("Randomize Scale:")
-        self.min_lbl = QtWidgets.QLabel("min")
-        self.min_lbl.setStyleSheet("font: 10px")
-        self.min_le = QtWidgets.QLineEdit("0.0")
-        self.min_le.setFixedWidth(40)
-        self.max_lbl = QtWidgets.QLabel("max")
-        self.max_le = QtWidgets.QLineEdit("1.0")
-        self.max_le.setFixedWidth(40)
+        self.options_lay = self._min_max_scale_options_ui()
         #self.scale_le.setAlignment(QtCore.Qt.AlignCenter)
         layout.addWidget(self.scale_lbl, 0, 0)
         layout.addWidget(self.scale_check_btn, 0, 1)
-        layout.addWidget(self.min_lbl, 1, 2)
-        layout.addWidget(self.min_le, 1, 3)
-        layout.addWidget(self.max_lbl, 1, 4)
-        layout.addWidget(self.max_le, 1, 5)
+        layout.addLayout(self.options_lay, 1, 2)
+        return layout
+
+    def _min_max_scale_options_ui(self):
+        layout = QtWidgets.QGridLayout()
+        self.scale_min_lbl = QtWidgets.QLabel("min")
+        self.scale_min_lbl.hide()
+        self.scale_min_le = QtWidgets.QLineEdit("0.0")
+        self.scale_min_le.setFixedWidth(40)
+        self.scale_min_le.hide()
+        self.scale_max_lbl = QtWidgets.QLabel("max")
+        self.scale_max_lbl.hide()
+        self.scale_max_le = QtWidgets.QLineEdit("1.0")
+        self.scale_max_le.setFixedWidth(40)
+        self.scale_max_le.hide()
+        layout.addWidget(self.scale_min_lbl, 1, 2)
+        layout.addWidget(self.scale_min_le, 1, 3)
+        layout.addWidget(self.scale_max_lbl, 1, 4)
+        layout.addWidget(self.scale_max_le, 1, 5)
         return layout
 
     def _create_random_rotation_ui(self):
@@ -56,16 +68,22 @@ class ScatterUI(QtWidgets.QDialog):
         self.rotate_check_btn = QtWidgets.QCheckBox()
         self.x_min_le = QtWidgets.QLineEdit("0.0")
         self.x_min_le.setFixedWidth(40)
+        self.x_min_le.hide()
         self.x_max_le = QtWidgets.QLineEdit("360.0")
         self.x_max_le.setFixedWidth(40)
+        self.x_max_le.hide()
         self.y_min_le = QtWidgets.QLineEdit("0.0")
         self.y_min_le.setFixedWidth(40)
+        self.y_min_le.hide()
         self.y_max_le = QtWidgets.QLineEdit("360.0")
         self.y_max_le.setFixedWidth(40)
+        self.y_max_le.hide()
         self.z_min_le = QtWidgets.QLineEdit("0.0")
         self.z_min_le.setFixedWidth(40)
+        self.z_min_le.hide()
         self.z_max_le = QtWidgets.QLineEdit("360.0")
         self.z_max_le.setFixedWidth(40)
+        self.z_max_le.hide()
         layout.addWidget(self.rotate_lbl, 2, 0)
         layout.addWidget(self.rotate_check_btn, 2, 1)
         layout.addWidget(self.x_min_le, 3, 2)
@@ -75,3 +93,43 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addWidget(self.z_min_le, 3, 8)
         layout.addWidget(self.z_max_le, 3, 9)
         return layout
+
+    def _create_button_ui(self):
+        self.scatter_btn = QtWidgets.QPushButton("Apply")
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(self.scatter_btn)
+        return layout
+
+    def _create_connections(self):
+        self.scale_check_btn.stateChanged.connect(self._show_scale_options)
+        self.rotate_check_btn.stateChanged.connect(self._show_rotate_options)
+
+    @QtCore.Slot()
+    def _show_rotate_options(self):
+        if self.rotate_check_btn.isChecked():
+            self.x_min_le.show()
+            self.x_max_le.show()
+            self.y_min_le.show()
+            self.y_max_le.show()
+            self.z_min_le.show()
+            self.z_max_le.show()
+        else:
+            self.x_min_le.hide()
+            self.x_max_le.hide()
+            self.y_min_le.hide()
+            self.y_max_le.hide()
+            self.z_min_le.hide()
+            self.z_max_le.hide()
+
+    @QtCore.Slot()
+    def _show_scale_options(self):
+        if self.scale_check_btn.isChecked():
+            self.scale_min_lbl.show()
+            self.scale_min_le.show()
+            self.scale_max_lbl.show()
+            self.scale_max_le.show()
+        else:
+            self.scale_min_lbl.hide()
+            self.scale_min_le.hide()
+            self.scale_max_lbl.hide()
+            self.scale_max_le.hide()

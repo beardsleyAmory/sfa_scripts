@@ -133,3 +133,29 @@ class ScatterUI(QtWidgets.QDialog):
             self.scale_min_le.hide()
             self.scale_max_lbl.hide()
             self.scale_max_le.hide()
+
+
+class Scatter():
+    """Scatter tool that creates instances of an object at another object's vertex locations"""
+    def __init__(self):
+        self._create_scatter_effect()
+
+    def _create_scatter_effect(self):
+        selection = cmds.ls(sl=True, fl=True)
+        vertex_name = cmds.filterExpand(selection, selectionMask=31,
+                                        expand=True)
+
+        object_to_instance = selection[0]
+
+        if not vertex_name:
+            object_to_convert = selection[1]
+            cmds.getAttr()
+            vertex_name = cmds.ls(object_to_convert.vtx[*], flatten=True)
+            print(vertex_name)
+
+        if cmds.objectType(object_to_instance) == 'transform':
+            for vertex in vertex_name:
+                new_instance = cmds.instance(object_to_instance)[0]
+                position = cmds.pointPosition(vertex, w=1)
+                cmds.move(position[0], position[1], position[2], new_instance, a=1, ws=1)
+

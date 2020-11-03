@@ -50,12 +50,12 @@ class ScatterUI(QtWidgets.QDialog):
         layout = QtWidgets.QGridLayout()
         self.scale_min_lbl = QtWidgets.QLabel("min")
         self.scale_min_lbl.hide()
-        self.scale_min_le = QtWidgets.QLineEdit("0.0")
+        self.scale_min_le = QtWidgets.QLineEdit("1.0")
         self.scale_min_le.setFixedWidth(40)
         self.scale_min_le.hide()
         self.scale_max_lbl = QtWidgets.QLabel("max")
         self.scale_max_lbl.hide()
-        self.scale_max_le = QtWidgets.QLineEdit("1.0")
+        self.scale_max_le = QtWidgets.QLineEdit("10.0")
         self.scale_max_le.setFixedWidth(40)
         self.scale_max_le.hide()
         layout.addWidget(self.scale_min_lbl, 1, 2)
@@ -156,13 +156,25 @@ class ScatterUI(QtWidgets.QDialog):
                 position = cmds.pointPosition(vertex, w=1)
                 cmds.move(position[0], position[1], position[2], new_instance, a=1, ws=1)
                 if self.scale_check_btn.isChecked():
-                    inst_scale = rand.uniform(float(self.scale_min_le.text()), float(self.scale_max_le.text()))
+                    scale_min = round(float(self.scale_min_le.text()), 1)
+                    scale_max = round(float(self.scale_max_le.text()), 1)
+
+                    inst_scale = round(rand.uniform(scale_min, scale_max), 1)
                     cmds.scale(inst_scale, inst_scale, inst_scale, new_instance, a=1, ws=1)
 
+                    print(inst_scale)
+
                 if self.rotate_check_btn.isChecked():
+                    rot_x_min = round(float(self.x_min_le.text()), 1)
+                    rot_x_max = round(float(self.x_max_le.text()), 1)
+                    rot_y_min = round(float(self.y_min_le.text()), 1)
+                    rot_y_max = round(float(self.y_max_le.text()), 1)
+                    rot_z_min = round(float(self.z_min_le.text()), 1)
+                    rot_z_max = round(float(self.z_max_le.text()), 1)
+
                     inst_rotation = [
-                        rand.uniform(float(self.x_min_le.text()), float(self.x_max_le.text())),
-                        rand.uniform(float(self.y_min_le.text()), float(self.y_max_le.text())),
-                        rand.uniform(float(self.z_min_le.text()), float(self.z_max_le.text()))]
+                        round(rand.uniform(rot_x_min, rot_x_max), 1),
+                        round(rand.uniform(rot_y_min, rot_y_max), 1),
+                        round(rand.uniform(rot_z_min, rot_z_max), 1)]
                     cmds.rotate(inst_rotation[0], inst_rotation[1],
                                 inst_rotation[2], new_instance, a=1, ws=1)

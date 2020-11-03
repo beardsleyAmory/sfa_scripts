@@ -155,12 +155,14 @@ class ScatterUI(QtWidgets.QDialog):
                 new_instance = cmds.instance(object_to_instance)[0]
                 position = cmds.pointPosition(vertex, w=1)
                 cmds.move(position[0], position[1], position[2], new_instance, a=1, ws=1)
-                inst_scale = rand.uniform(float(self.scale_min_le.text()), float(self.scale_max_le.text()))
-                cmds.scale(inst_scale, inst_scale, inst_scale, new_instance, a=1, ws=1)
-                inst_rotation = [
-                    rand.uniform(float(self.x_min_le.text()), float(self.x_max_le.text())),
-                    rand.uniform(float(self.y_min_le.text()), float(self.y_max_le.text())),
-                    rand.uniform(float(self.z_min_le.text()), float(self.z_max_le.text()))]
-                cmds.rotate(inst_rotation[0], inst_rotation[1],
-                            inst_rotation[2], new_instance, a=1, ws=1)
+                if self.scale_check_btn.isChecked():
+                    inst_scale = rand.uniform(float(self.scale_min_le.text()), float(self.scale_max_le.text()))
+                    cmds.scale(inst_scale, inst_scale, inst_scale, new_instance, a=1, ws=1)
 
+                if self.rotate_check_btn.isChecked():
+                    inst_rotation = [
+                        rand.uniform(float(self.x_min_le.text()), float(self.x_max_le.text())),
+                        rand.uniform(float(self.y_min_le.text()), float(self.y_max_le.text())),
+                        rand.uniform(float(self.z_min_le.text()), float(self.z_max_le.text()))]
+                    cmds.rotate(inst_rotation[0], inst_rotation[1],
+                                inst_rotation[2], new_instance, a=1, ws=1)

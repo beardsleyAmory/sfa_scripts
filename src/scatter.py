@@ -1,3 +1,5 @@
+import random as rand
+
 from PySide2 import QtWidgets, QtCore
 from shiboken2 import wrapInstance
 import maya.OpenMayaUI as omui
@@ -134,28 +136,29 @@ class ScatterUI(QtWidgets.QDialog):
             self.scale_max_lbl.hide()
             self.scale_max_le.hide()
 
-
-class Scatter():
-    """Scatter tool that creates instances of an object at another object's vertex locations"""
-    def __init__(self):
-        self._create_scatter_effect()
-
     def _create_scatter_effect(self):
         selection = cmds.ls(sl=True, fl=True)
-        vertex_name = cmds.filterExpand(selection, selectionMask=31,
+        vertices = cmds.filterExpand(selection, selectionMask=31,
                                         expand=True)
 
         object_to_instance = selection[0]
 
-        if not vertex_name:
+        """if not vertices:
             object_to_convert = selection[1]
-            cmds.getAttr()
-            vertex_name = cmds.ls(object_to_convert.vtx[*], flatten=True)
-            print(vertex_name)
+            vertices = cmds.ls(object_to_convert.vtx[*], flatten=True)
+            print(vertices)"""
 
         if cmds.objectType(object_to_instance) == 'transform':
-            for vertex in vertex_name:
+            for vertex in vertices:
                 new_instance = cmds.instance(object_to_instance)[0]
                 position = cmds.pointPosition(vertex, w=1)
                 cmds.move(position[0], position[1], position[2], new_instance, a=1, ws=1)
+                inst_scale = rand.uniform(int(self.scale_min_le), int(self.scale_max_le))
+                cmds.scale(inst_scale, inst_scale, inst_scale, new_instance, a=1, ws=1)
+                inst_rotation = [
+                    rand.uniform(int(self.x_min_le), int(self.x_max_le)),
+                    rand.uniform(int(self.y_min_le), int(self.y_max_le)),
+                    rand.uniform(int(self.z_min_le), int(self.z_max_le))]
+                cmds.rotate(inst_rotation[0], inst_rotation[1],
+                            inst_rotation[2], new_instance, a=1, ws=1)
 

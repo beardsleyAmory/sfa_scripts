@@ -105,6 +105,7 @@ class ScatterUI(QtWidgets.QDialog):
     def _create_connections(self):
         self.scale_check_btn.stateChanged.connect(self._show_scale_options)
         self.rotate_check_btn.stateChanged.connect(self._show_rotate_options)
+        self.scatter_btn.clicked.connect(self._create_scatter_effect)
 
     @QtCore.Slot()
     def _show_rotate_options(self):
@@ -149,16 +150,17 @@ class ScatterUI(QtWidgets.QDialog):
             print(vertices)"""
 
         if cmds.objectType(object_to_instance) == 'transform':
+
             for vertex in vertices:
                 new_instance = cmds.instance(object_to_instance)[0]
                 position = cmds.pointPosition(vertex, w=1)
                 cmds.move(position[0], position[1], position[2], new_instance, a=1, ws=1)
-                inst_scale = rand.uniform(int(self.scale_min_le), int(self.scale_max_le))
+                inst_scale = rand.uniform(float(self.scale_min_le.text()), float(self.scale_max_le.text()))
                 cmds.scale(inst_scale, inst_scale, inst_scale, new_instance, a=1, ws=1)
                 inst_rotation = [
-                    rand.uniform(int(self.x_min_le), int(self.x_max_le)),
-                    rand.uniform(int(self.y_min_le), int(self.y_max_le)),
-                    rand.uniform(int(self.z_min_le), int(self.z_max_le))]
+                    rand.uniform(float(self.x_min_le.text()), float(self.x_max_le.text())),
+                    rand.uniform(float(self.y_min_le.text()), float(self.y_max_le.text())),
+                    rand.uniform(float(self.z_min_le.text()), float(self.z_max_le.text()))]
                 cmds.rotate(inst_rotation[0], inst_rotation[1],
                             inst_rotation[2], new_instance, a=1, ws=1)
 

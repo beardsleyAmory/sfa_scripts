@@ -144,10 +144,9 @@ class ScatterUI(QtWidgets.QDialog):
 
         object_to_instance = selection[0]
 
-        """if not vertices:
+        if not vertices:
             object_to_convert = selection[1]
-            vertices = cmds.ls(object_to_convert.vtx[*], flatten=True)
-            print(vertices)"""
+            vertices = cmds.ls('%s.vtx[*]' % object_to_convert, flatten=True)
 
         if cmds.objectType(object_to_instance) == 'transform':
 

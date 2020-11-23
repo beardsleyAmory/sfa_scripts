@@ -26,18 +26,30 @@ class ScatterUI(QtWidgets.QDialog):
         self.scale_lay = self._create_random_scale_ui()
         self.rotation_lay = self._create_random_rotation_ui()
         self.button_lay = self._create_button_ui()
-        self.slider_lbl = QtWidgets.QLabel("Percentage of Scatter:")
-        self.slider_sld = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        self.slider_lay = self._create_slider_ui()
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
         self.main_lay.addLayout(self.scale_lay)
         self.main_lay.addLayout(self.rotation_lay)
-        self.main_lay.addWidget(self.slider_lbl)
-        self.main_lay.addWidget(self.slider_sld)
+        self.main_lay.addLayout(self.slider_lay)
         self.main_lay.addStretch()
         self.main_lay.addLayout(self.button_lay)
         self.setLayout(self.main_lay)
         self._create_connections()
+
+    def _create_slider_ui(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.slider_lbl = QtWidgets.QLabel("Percentage of Scatter:")
+        self.slider_sld = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        self.slider_sld.setRange(0, 100)
+        self.perc_lbl = QtWidgets.QLabel('0')
+        self.perc_lbl.setMinimumWidth(30)
+
+        layout.addWidget(self.slider_lbl)
+        layout.addWidget(self.slider_sld)
+        layout.addSpacing(15)
+        layout.addWidget(self.perc_lbl)
+        return layout
 
     def _create_random_scale_ui(self):
         layout = QtWidgets.QGridLayout()
@@ -110,6 +122,10 @@ class ScatterUI(QtWidgets.QDialog):
         self.scale_check_btn.stateChanged.connect(self._show_scale_options)
         self.rotate_check_btn.stateChanged.connect(self._show_rotate_options)
         self.scatter_btn.clicked.connect(self._create_scatter_effect)
+        self.slider_sld.valueChanged.connect(self._update_perc_label)
+
+    def _update_perc_label(self, value):
+        self.perc_lbl.setText(str(value))
 
     @QtCore.Slot()
     def _show_rotate_options(self):

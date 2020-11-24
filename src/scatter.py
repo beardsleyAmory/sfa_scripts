@@ -174,6 +174,19 @@ class ScatterUI(QtWidgets.QDialog):
             per_val = float(self.slider_sld.value())
             per_vert = per_val / 100
             numb_vert = int(ver_val * per_vert)
+            to_remove = numb_vert - ver_val
+            high_bound = ver_val - 1
+            print(to_remove)
+
+            for i in range(0, (to_remove * -1)):
+                temp_vert = rand.randint(0, high_bound)
+                print(temp_vert)
+                del vertices[temp_vert]
+                high_bound = high_bound - 1
+                print(high_bound)
+                print(vertices)
+
+            print(vertices)
 
             for vertex in vertices:
 

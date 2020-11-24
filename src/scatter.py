@@ -4,6 +4,7 @@ from PySide2 import QtWidgets, QtCore
 from shiboken2 import wrapInstance
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds
+import random as rand
 
 def maya_main_window():
     main_window = omui.MQtUtil.mainWindow()
@@ -169,31 +170,36 @@ class ScatterUI(QtWidgets.QDialog):
             vertices = cmds.ls('%s.vtx[*]' % object_to_convert, flatten=True)
 
         if cmds.objectType(object_to_instance) == 'transform':
+            ver_val = len(vertices)
+            per_val = float(self.slider_sld.value())
+            per_vert = per_val / 100
+            numb_vert = int(ver_val * per_vert)
 
             for vertex in vertices:
-                new_instance = cmds.instance(object_to_instance)[0]
-                position = cmds.pointPosition(vertex, w=1)
-                cmds.move(position[0], position[1], position[2], new_instance, a=1, ws=1)
-                if self.scale_check_btn.isChecked():
-                    scale_min = round(float(self.scale_min_le.text()), 1)
-                    scale_max = round(float(self.scale_max_le.text()), 1)
 
-                    inst_scale = round(rand.uniform(scale_min, scale_max), 1)
-                    cmds.scale(inst_scale, inst_scale, inst_scale, new_instance, a=1, ws=1)
+                    new_instance = cmds.instance(object_to_instance)[0]
+                    position = cmds.pointPosition(vertex, w=1)
+                    cmds.move(position[0], position[1], position[2], new_instance, a=1, ws=1)
+                    if self.scale_check_btn.isChecked():
+                        scale_min = round(float(self.scale_min_le.text()), 1)
+                        scale_max = round(float(self.scale_max_le.text()), 1)
 
-                    print(inst_scale)
+                        inst_scale = round(rand.uniform(scale_min, scale_max), 1)
+                        cmds.scale(inst_scale, inst_scale, inst_scale, new_instance, a=1, ws=1)
 
-                if self.rotate_check_btn.isChecked():
-                    rot_x_min = round(float(self.x_min_le.text()), 1)
-                    rot_x_max = round(float(self.x_max_le.text()), 1)
-                    rot_y_min = round(float(self.y_min_le.text()), 1)
-                    rot_y_max = round(float(self.y_max_le.text()), 1)
-                    rot_z_min = round(float(self.z_min_le.text()), 1)
-                    rot_z_max = round(float(self.z_max_le.text()), 1)
+                        print(inst_scale)
 
-                    inst_rotation = [
-                        round(rand.uniform(rot_x_min, rot_x_max), 1),
-                        round(rand.uniform(rot_y_min, rot_y_max), 1),
-                        round(rand.uniform(rot_z_min, rot_z_max), 1)]
-                    cmds.rotate(inst_rotation[0], inst_rotation[1],
-                                inst_rotation[2], new_instance, a=1, ws=1)
+                    if self.rotate_check_btn.isChecked():
+                        rot_x_min = round(float(self.x_min_le.text()), 1)
+                        rot_x_max = round(float(self.x_max_le.text()), 1)
+                        rot_y_min = round(float(self.y_min_le.text()), 1)
+                        rot_y_max = round(float(self.y_max_le.text()), 1)
+                        rot_z_min = round(float(self.z_min_le.text()), 1)
+                        rot_z_max = round(float(self.z_max_le.text()), 1)
+
+                        inst_rotation = [
+                            round(rand.uniform(rot_x_min, rot_x_max), 1),
+                            round(rand.uniform(rot_y_min, rot_y_max), 1),
+                            round(rand.uniform(rot_z_min, rot_z_max), 1)]
+                        cmds.rotate(inst_rotation[0], inst_rotation[1],
+                                    inst_rotation[2], new_instance, a=1, ws=1)

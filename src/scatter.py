@@ -170,49 +170,42 @@ class ScatterUI(QtWidgets.QDialog):
             vertices = cmds.ls('%s.vtx[*]' % object_to_convert, flatten=True)
 
         if cmds.objectType(object_to_instance) == 'transform':
-            ver_val = len(vertices)
-            per_val = float(self.slider_sld.value())
-            per_vert = per_val / 100
-            numb_vert = int(ver_val * per_vert)
-            to_remove = numb_vert - ver_val
-            high_bound = ver_val - 1
-            print(to_remove)
-
-            for i in range(0, (to_remove * -1)):
-                temp_vert = rand.randint(0, high_bound)
-                print(temp_vert)
-                del vertices[temp_vert]
-                high_bound = high_bound - 1
-                print(high_bound)
-                print(vertices)
-
-            print(vertices)
+            self._create_percentage_scatter(vertices)
 
             for vertex in vertices:
+                new_instance = cmds.instance(object_to_instance)[0]
+                position = cmds.pointPosition(vertex, w=1)
+                cmds.move(position[0], position[1], position[2], new_instance, a=1, ws=1)
+                if self.scale_check_btn.isChecked():
+                    scale_min = round(float(self.scale_min_le.text()), 1)
+                    scale_max = round(float(self.scale_max_le.text()), 1)
 
-                    new_instance = cmds.instance(object_to_instance)[0]
-                    position = cmds.pointPosition(vertex, w=1)
-                    cmds.move(position[0], position[1], position[2], new_instance, a=1, ws=1)
-                    if self.scale_check_btn.isChecked():
-                        scale_min = round(float(self.scale_min_le.text()), 1)
-                        scale_max = round(float(self.scale_max_le.text()), 1)
+                    inst_scale = round(rand.uniform(scale_min, scale_max), 1)
+                    cmds.scale(inst_scale, inst_scale, inst_scale, new_instance, a=1, ws=1)
 
-                        inst_scale = round(rand.uniform(scale_min, scale_max), 1)
-                        cmds.scale(inst_scale, inst_scale, inst_scale, new_instance, a=1, ws=1)
+                if self.rotate_check_btn.isChecked():
+                    rot_x_min = round(float(self.x_min_le.text()), 1)
+                    rot_x_max = round(float(self.x_max_le.text()), 1)
+                    rot_y_min = round(float(self.y_min_le.text()), 1)
+                    rot_y_max = round(float(self.y_max_le.text()), 1)
+                    rot_z_min = round(float(self.z_min_le.text()), 1)
+                    rot_z_max = round(float(self.z_max_le.text()), 1)
 
-                        print(inst_scale)
+                    inst_rotation = [
+                        round(rand.uniform(rot_x_min, rot_x_max), 1),
+                        round(rand.uniform(rot_y_min, rot_y_max), 1),
+                        round(rand.uniform(rot_z_min, rot_z_max), 1)]
+                    cmds.rotate(inst_rotation[0], inst_rotation[1],
+                                inst_rotation[2], new_instance, a=1, ws=1)
 
-                    if self.rotate_check_btn.isChecked():
-                        rot_x_min = round(float(self.x_min_le.text()), 1)
-                        rot_x_max = round(float(self.x_max_le.text()), 1)
-                        rot_y_min = round(float(self.y_min_le.text()), 1)
-                        rot_y_max = round(float(self.y_max_le.text()), 1)
-                        rot_z_min = round(float(self.z_min_le.text()), 1)
-                        rot_z_max = round(float(self.z_max_le.text()), 1)
-
-                        inst_rotation = [
-                            round(rand.uniform(rot_x_min, rot_x_max), 1),
-                            round(rand.uniform(rot_y_min, rot_y_max), 1),
-                            round(rand.uniform(rot_z_min, rot_z_max), 1)]
-                        cmds.rotate(inst_rotation[0], inst_rotation[1],
-                                    inst_rotation[2], new_instance, a=1, ws=1)
+    def _create_percentage_scatter(self, vertices):
+        ver_val = len(vertices)
+        per_val = float(self.slider_sld.value())
+        per_vert = per_val / 100
+        numb_vert = int(ver_val * per_vert)
+        to_remove = numb_vert - ver_val
+        high_bound = ver_val - 1
+        for i in range(0, (to_remove * -1)):
+            temp_vert = rand.randint(0, high_bound)
+            del vertices[temp_vert]
+            high_bound = high_bound - 1
